@@ -4,20 +4,22 @@ import { useEffect, useRef } from "react";
 import { motion, useInView, useAnimate, stagger } from "motion/react";
 import Link from "next/link";
 
+
+
 const ASCII_HERO = `
-    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-    ░░  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒  ░░
-    ░░  ▒▒                     ▒▒  ░░
-    ░░  ▒▒   ██  ░░░░░░  ██    ▒▒  ░░
-    ░░  ▒▒   ██  ░░░░░░  ██    ▒▒  ░░
-    ░░  ▒▒                     ▒▒  ░░
-    ░░  ▒▒      ░░░░░░░░░      ▒▒  ░░
-    ░░  ▒▒    ░░          ░░   ▒▒  ░░
-    ░░  ▒▒   ░░  ████████  ░░  ▒▒  ░░
-    ░░  ▒▒    ░░░░░░░░░░░░░░   ▒▒  ░░
-    ░░  ▒▒                     ▒▒  ░░
-    ░░  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒  ░░
-    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░░  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒  ░░
+░░  ▒▒                     ▒▒  ░░
+░░  ▒▒   ██  ░░░░░░  ██    ▒▒  ░░
+░░  ▒▒   ██  ░░░░░░  ██    ▒▒  ░░
+░░  ▒▒                     ▒▒  ░░
+░░  ▒▒      ░░░░░░░░░      ▒▒  ░░
+░░  ▒▒    ░░          ░░   ▒▒  ░░
+░░  ▒▒   ░░  ████████  ░░  ▒▒  ░░
+░░  ▒▒    ░░░░░░░░░░░░░░   ▒▒  ░░
+░░  ▒▒                     ▒▒  ░░
+░░  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒  ░░
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 `.trim();
 
 const features = [
@@ -71,7 +73,15 @@ export default function LandingPage() {
       "span[data-char]",
       { opacity: [0, 1], y: [6, 0] },
       { duration: 0.25, delay: stagger(0.005), ease: "easeOut" }
-    );
+    ).then(() => {
+      // Motion leaves inline opacity/transform on each span, which blocks the
+      // CSS eye-blink animation from overriding them. Clear them on eye spans.
+      el.querySelectorAll("span.ascii-eye").forEach((span: Element) => {
+        const s = span as HTMLElement;
+        s.style.opacity = "";
+        s.style.transform = "";
+      });
+    });
   }, [heroAnimate, heroScope]);
 
   return (
@@ -162,9 +172,21 @@ export default function LandingPage() {
               fontFamily: "var(--font-dm-mono, monospace)",
             }}
           >
-            {ASCII_HERO.split("").map((char, i) => (
-              <span key={i} data-char style={{ opacity: 0, display: "inline" }}>
-                {char}
+            {ASCII_HERO.split("\n").map((line, li) => (
+              <span key={li} style={{ display: "block" }}>
+                {line.split("").map((char, ci) => {
+                  const isEye = (li === 3 || li === 4) && char === "█";
+                  return (
+                    <span
+                      key={ci}
+                      data-char
+                      className={isEye ? "ascii-eye" : undefined}
+                      style={{ opacity: 0 }}
+                    >
+                      {char}
+                    </span>
+                  );
+                })}
               </span>
             ))}
           </pre>
@@ -351,6 +373,142 @@ export default function LandingPage() {
             />
           ))}
         </div>
+      </section>
+
+      {/* Meet the Creator */}
+      <section
+        style={{
+          textAlign: "center",
+          padding: "80px 24px 80px",
+          borderTop: "1px solid #111",
+        }}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div
+            style={{
+              fontSize: "10px",
+              color: "#444",
+              letterSpacing: "0.25em",
+              marginBottom: "12px",
+            }}
+          >
+            ┌──────────────────────────────────┐
+          </div>
+          <div
+            style={{
+              fontSize: "11px",
+              color: "#555",
+              letterSpacing: "0.2em",
+              marginBottom: "12px",
+            }}
+          >
+            MEET THE CREATOR
+          </div>
+          <div
+            style={{
+              fontSize: "10px",
+              color: "#444",
+              letterSpacing: "0.25em",
+              marginBottom: "40px",
+            }}
+          >
+            └──────────────────────────────────┘
+          </div>
+
+          <div
+            style={{
+              display: "inline-block",
+              border: "1px solid #1a1a1a",
+              padding: "32px 48px",
+              background: "#0d0d0d",
+              position: "relative",
+              maxWidth: "480px",
+              width: "100%",
+            }}
+          >
+            {/* corner decorations */}
+            {(["top-left", "top-right", "bottom-left", "bottom-right"] as const).map((pos) => (
+              <span
+                key={pos}
+                style={{
+                  position: "absolute",
+                  ...(pos.includes("top") ? { top: -1 } : { bottom: -1 }),
+                  ...(pos.includes("left") ? { left: -1 } : { right: -1 }),
+                  color: "#333",
+                  fontSize: "11px",
+                  lineHeight: 1,
+                }}
+              >
+                {pos === "top-left" ? "┌" : pos === "top-right" ? "┐" : pos === "bottom-left" ? "└" : "┘"}
+              </span>
+            ))}
+
+            <div
+              style={{
+                fontSize: "28px",
+                marginBottom: "16px",
+                textShadow: "0 0 6px #3fa9f5, 0 0 14px #1e6fc9",
+                animation: "eye-blink 2s ease-in-out 2.5s infinite"
+              }}
+            >
+              ◈
+            </div>
+            <div
+              style={{
+                fontSize: "15px",
+                color: "#ededed",
+                letterSpacing: "0.15em",
+                marginBottom: "8px",
+              }}
+            >
+              UDAY SHARMA
+            </div>
+            <div
+              style={{
+                fontSize: "11px",
+                color: "#444",
+                letterSpacing: "0.1em",
+                marginBottom: "24px",
+                lineHeight: 1.8,
+              }}
+            >
+              BUILT THIS PROJECT · CHECK OUT MORE ON GITHUB
+            </div>
+            <a
+              href="https://github.com/UdaySharmaGitHub"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-block",
+                border: "1px solid #333",
+                color: "#888",
+                padding: "10px 28px",
+                fontFamily: "var(--font-dm-mono, monospace)",
+                fontSize: "12px",
+                letterSpacing: "0.18em",
+                textDecoration: "none",
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.borderColor = "#FF9B21";
+                (e.currentTarget as HTMLAnchorElement).style.color = "#FF9B21";
+                (e.currentTarget as HTMLAnchorElement).style.textShadow = "0 0 8px rgba(255,155,33,0.5)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.borderColor = "#333";
+                (e.currentTarget as HTMLAnchorElement).style.color = "#888";
+                (e.currentTarget as HTMLAnchorElement).style.textShadow = "none";
+              }}
+            >
+              VIEW GITHUB →
+            </a>
+          </div>
+        </motion.div>
       </section>
 
       {/* Bottom CTA */}

@@ -48,6 +48,22 @@ body {
   z-index: 0;
 }
 
+/* ASCII hero eye blink */
+@keyframes eye-blink {
+  0%, 88%, 100% { opacity: 1; transform: scaleY(1); }
+  93%           { opacity: 0; transform: scaleY(0.05); }
+  97%           { opacity: 1; transform: scaleY(1); }
+}
+
+.ascii-eye {
+  display: inline-block;
+  transform-origin: center 60%;
+  color: #3fa9f5 !important;
+  text-shadow: 0 0 6px #3fa9f5, 0 0 14px #1e6fc9 !important;
+  /* starts after entrance animation (~2.5s), then blinks every 4s */
+  animation: eye-blink 2s ease-in-out 2.5s infinite;
+}
+
 /* Phosphor glow effect */
 .phosphor-glow {
   text-shadow:

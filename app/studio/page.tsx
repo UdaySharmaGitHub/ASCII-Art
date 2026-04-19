@@ -39,107 +39,153 @@ export default function StudioPage() {
   );
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-        background: "#0a0a0a",
-        overflow: "hidden",
-        fontFamily: "var(--font-dm-mono, monospace)",
-      }}
-    >
-      {/* Header bar */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 16px",
-          height: "36px",
-          borderBottom: "1px solid #1a1a1a",
-          background: "#080808",
-          flexShrink: 0,
-        }}
-      >
-        <a
-          href="/"
+    <>
+      <style>{`
+        .studio-root {
+          display: flex;
+          flex-direction: column;
+          height: 100vh;
+          background: #0a0a0a;
+          overflow: hidden;
+          font-family: var(--font-dm-mono, monospace);
+        }
+        .studio-main {
+          display: flex;
+          flex: 1;
+          overflow: hidden;
+        }
+        .studio-canvas-col {
+          flex: 1;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #0a0a0a;
+        }
+        .studio-canvas-inner {
+          aspect-ratio: 4/3;
+          height: 100%;
+          max-width: 100%;
+          position: relative;
+        }
+        .studio-panel-col {
+          width: clamp(240px, 22%, 300px);
+          flex-shrink: 0;
+        }
+        @media (max-width: 767px) {
+          .studio-main {
+            flex-direction: column;
+          }
+          .studio-canvas-col {
+            flex: none;
+            width: 100%;
+            height: 55vw;
+            min-height: 200px;
+          }
+          .studio-canvas-inner {
+            height: 100%;
+            width: 100%;
+            aspect-ratio: unset;
+          }
+          .studio-panel-col {
+            width: 100%;
+            flex: 1;
+            min-height: 0;
+          }
+        }
+      `}</style>
+      <div className="studio-root">
+        {/* Header bar */}
+        <div
           style={{
-            color: "#444",
-            textDecoration: "none",
-            fontSize: "11px",
-            letterSpacing: "0.1em",
-            transition: "color 0.15s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#FF9B21")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#444")}
-        >
-          ← ASCII-ART MIRROR
-        </a>
-        <span
-          style={{
-            fontSize: "10px",
-            color: "#2a2a2a",
-            letterSpacing: "0.15em",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 16px",
+            height: "36px",
+            borderBottom: "1px solid #1a1a1a",
+            background: "#080808",
+            flexShrink: 0,
           }}
         >
-          STUDIO
-        </span>
-      </div>
+          <a
+            href="/"
+            style={{
+              color: "#444",
+              textDecoration: "none",
+              fontSize: "11px",
+              letterSpacing: "0.1em",
+              transition: "color 0.15s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#FF9B21")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#444")}
+          >
+            ← ASCII-ART MIRROR
+          </a>
+          <span
+            style={{
+              fontSize: "10px",
+              color: "#2a2a2a",
+              letterSpacing: "0.15em",
+            }}
+          >
+            STUDIO
+          </span>
+        </div>
 
-      {/* TopBar with stats and quick toggles */}
-      <TopBar
-        stats={stats}
-        settings={settings}
-        onToggle={handleToggle}
-        onExportPNG={exportPNG}
-        onCopyText={copyText}
-      />
+        {/* TopBar with stats and quick toggles */}
+        <TopBar
+          stats={stats}
+          settings={settings}
+          onToggle={handleToggle}
+          onExportPNG={exportPNG}
+          onCopyText={copyText}
+        />
 
-      {/* Main split layout */}
-      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-        {/* Left: ASCII canvas */}
-        <div style={{ flex: 1, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "#0a0a0a" }}>
-          <div style={{ aspectRatio: "4/3", height: "100%", maxWidth: "100%", position: "relative" }}>
-          <AsciiCanvas
-            canvasRef={canvasRef}
-            isLoading={!isReady && !cameraError}
-            error={cameraError}
-          />
+        {/* Main split layout */}
+        <div className="studio-main">
+          {/* Canvas area */}
+          <div className="studio-canvas-col">
+            <div className="studio-canvas-inner">
+              <AsciiCanvas
+                canvasRef={canvasRef}
+                isLoading={!isReady && !cameraError}
+                error={cameraError}
+              />
 
-          {/* Hidden video element for webcam feed */}
-          <video
-            ref={videoRef}
-            muted
-            playsInline
-            style={{ display: "none" }}
-          />
+              {/* Hidden video element for webcam feed */}
+              <video
+                ref={videoRef}
+                muted
+                playsInline
+                style={{ display: "none" }}
+              />
 
-          {/* Start camera overlay */}
-          {!isReady && !cameraError && (
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                zIndex: 20,
-                background: "#000",
-              }}
-            >
-              <pre
-                style={{
-                  fontSize: "11px",
-                  lineHeight: 1.5,
-                  color: "#333",
-                  textAlign: "center",
-                  margin: "0 0 24px",
-                  userSelect: "none",
-                }}
-              >
-                {`  ┌─────────────────────────────┐
+              {/* Start camera overlay */}
+              {!isReady && !cameraError && (
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 20,
+                    background: "#000",
+                  }}
+                >
+                  <pre
+                    style={{
+                      fontSize: "clamp(8px, 1.8vw, 11px)",
+                      lineHeight: 1.5,
+                      color: "#333",
+                      textAlign: "center",
+                      margin: "0 0 24px",
+                      userSelect: "none",
+                    }}
+                  >
+                    {`  ┌─────────────────────────────┐
   │                             │
   │   ░░░░░░░░░░░░░░░░░░░░░░░   │
   │   ░                     ░   │
@@ -148,49 +194,50 @@ export default function StudioPage() {
   │   ░░░░░░░░░░░░░░░░░░░░░░░   │
   │                             │
   └─────────────────────────────┘`}
-              </pre>
-              <button
-                onClick={startCamera}
-                style={{
-                  background: "transparent",
-                  border: "1px solid #FF9B21",
-                  color: "#FF9B21",
-                  padding: "10px 24px",
-                  cursor: "pointer",
-                  fontFamily: "var(--font-dm-mono, monospace)",
-                  fontSize: "13px",
-                  letterSpacing: "0.12em",
-                  transition: "all 0.2s",
-                  textShadow: "0 0 7px #FF9B21",
-                  boxShadow: "0 0 8px rgba(255,155,33,0.2)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(255,155,33,0.1)";
-                  e.currentTarget.style.boxShadow = "0 0 20px rgba(255,155,33,0.4)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "transparent";
-                  e.currentTarget.style.boxShadow = "0 0 8px rgba(255,155,33,0.2)";
-                }}
-              >
-                ACTIVATE CAMERA
-              </button>
+                  </pre>
+                  <button
+                    onClick={startCamera}
+                    style={{
+                      background: "transparent",
+                      border: "1px solid #FF9B21",
+                      color: "#FF9B21",
+                      padding: "10px 24px",
+                      cursor: "pointer",
+                      fontFamily: "var(--font-dm-mono, monospace)",
+                      fontSize: "13px",
+                      letterSpacing: "0.12em",
+                      transition: "all 0.2s",
+                      textShadow: "0 0 7px #FF9B21",
+                      boxShadow: "0 0 8px rgba(255,155,33,0.2)",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "rgba(255,155,33,0.1)";
+                      e.currentTarget.style.boxShadow = "0 0 20px rgba(255,155,33,0.4)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "transparent";
+                      e.currentTarget.style.boxShadow = "0 0 8px rgba(255,155,33,0.2)";
+                    }}
+                  >
+                    ACTIVATE CAMERA
+                  </button>
+                </div>
+              )}
             </div>
-          )}
+          </div>
+
+          {/* Control panel */}
+          <div className="studio-panel-col">
+            <ControlPanel
+              settings={settings}
+              onChange={handleChange}
+              mediaPipeLoading={mpLoading}
+              mediaPipeLoaded={mpLoaded}
+              mediaPipeError={mpError}
+            />
           </div>
         </div>
-
-        {/* Right: Control panel */}
-        <div style={{ width: "clamp(240px, 22%, 300px)", flexShrink: 0 }}>
-          <ControlPanel
-            settings={settings}
-            onChange={handleChange}
-            mediaPipeLoading={mpLoading}
-            mediaPipeLoaded={mpLoaded}
-            mediaPipeError={mpError}
-          />
-        </div>
       </div>
-    </div>
+    </>
   );
 }
