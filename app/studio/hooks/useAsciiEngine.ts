@@ -71,7 +71,12 @@ export function useAsciiEngine(
   const frameTimesRef = useRef<number[]>([]);
   const lastStatsUpdateRef = useRef<number>(0);
   const lastFrameTextRef = useRef<string>("");
+  const frameColorsRef = useRef<string[]>([]);
   const settingsRef = useRef<AsciiSettings>(settings);
+  const rainStateRef = useRef<
+    Array<{ col: number; y: number; speed: number; trail: number }>
+  >([]);
+  const rainDimsRef = useRef<{ cols: number; rows: number }>({ cols: 0, rows: 0 });
   const [stats, setStats] = useState<EngineStats>({ fps: 0, cols: 0, rows: 0 });
 
   // Keep settingsRef in sync without triggering effect restarts
@@ -113,6 +118,8 @@ export function useAsciiEngine(
 
     const imageData = octx.getImageData(0, 0, cols, rows);
     const pixels = imageData.data;
+    const frameColors = frameColorsRef.current;
+    frameColors.length = cols * rows;
 
     // MediaPipe segmentation
     let mask: SegmentationMask = null;
@@ -181,6 +188,7 @@ export function useAsciiEngine(
           isForeground = mask[mr * maskW + mc] === 1;
         }
 
+        let color: string;
         if (s.colorFromVideo) {
           const luma = 0.299 * R + 0.587 * G + 0.114 * B;
           const sat = 1.6;
@@ -188,13 +196,15 @@ export function useAsciiEngine(
           const vR = clamp((luma + (R - luma) * sat) * bri, 0, 255);
           const vG = clamp((luma + (G - luma) * sat) * bri, 0, 255);
           const vB = clamp((luma + (B - luma) * sat) * bri, 0, 255);
-          ctx.fillStyle = `rgb(${vR|0},${vG|0},${vB|0})`;
+          color = `rgb(${vR|0},${vG|0},${vB|0})`;
         } else if (mask && !isForeground) {
-          ctx.fillStyle = "#2a2a2a";
+          color = "#2a2a2a";
         } else {
-          ctx.fillStyle = resolveColor(s.colorMode, col, cols, gray);
+          color = resolveColor(s.colorMode, col, cols, gray);
         }
 
+        frameColors[row * cols + col] = color;
+        ctx.fillStyle = color;
         ctx.fillText(char, col * cellW, row * cellH);
         frameText += char;
       }
@@ -203,7 +213,54 @@ export function useAsciiEngine(
 
     lastFrameTextRef.current = frameText;
 
-    // FPS tracking
+    // Matrix rain overlay
+    if (s.matrixRain) {
+      const dims = rainDimsRef.current;
+      if (dims.cols !== cols || dims.rows !== rows) {
+        dims.cols = cols;
+        dims.rows = rows;
+        rainStateRef.current = Array.from({ length: cols * 2 }, (_, index) => ({
+          col: Math.floor(index / 2),
+          y: -(Math.random() * rows * 2),
+          speed: 1.5 + Math.random(),
+          trail: 10 + Math.floor(Math.random() * 16),
+        }));
+      }
+
+      const rain = rainStateRef.current;
+      const rainChars = chars.replace(/ /g, "") || chars;
+
+      for (const drop of rain) {
+        drop.y += drop.speed * s.matrixRainSpeed;
+        if (Math.floor(drop.y) - drop.trail > rows) {
+          drop.y = -(Math.random() * rows * 0.5);
+          drop.speed = 1.5 + Math.random();
+          drop.trail = 10 + Math.floor(Math.random() * 16);
+        }
+      }
+
+      const savedAlpha = ctx.globalAlpha;
+      for (const drop of rain) {
+        const headRow = Math.floor(drop.y);
+
+        for (let t = drop.trail; t >= 0; t--) {
+          const row = headRow - t;
+          if (row < 0 || row >= rows) continue;
+          const ch = rainChars[Math.floor(Math.random() * rainChars.length)];
+          ctx.fillStyle = frameColors[row * cols + drop.col];
+          if (t === 0) {
+            ctx.globalAlpha = 1.0;
+          } else {
+            const ratio = 1 - t / drop.trail;
+            ctx.globalAlpha = ratio * ratio * 0.85 + 0.05;
+          }
+          ctx.fillText(ch, drop.col * cellW, row * cellH);
+        }
+      }
+      ctx.globalAlpha = savedAlpha;
+    }
+
+
     const now = performance.now();
     frameTimesRef.current.push(now);
     if (frameTimesRef.current.length > 30) frameTimesRef.current.shift();

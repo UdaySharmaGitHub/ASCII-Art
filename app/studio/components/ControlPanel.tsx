@@ -243,6 +243,33 @@ export function ControlPanel({
             INVERT BRIGHTNESS
           </button>
         </div>
+        <div style={{ display: "flex", gap: "4px", marginTop: "4px" }}>
+          <button
+            style={{
+              ...s.toggle(settings.matrixRain),
+              border: `1px solid ${settings.matrixRain ? "#00FF41" : "#2a2a2a"}`,
+              color: settings.matrixRain ? "#00FF41" : "#444",
+              background: settings.matrixRain ? "rgba(0,255,65,0.08)" : "transparent",
+            }}
+            onClick={() => onChange("matrixRain", !settings.matrixRain)}
+            aria-pressed={settings.matrixRain}
+          >
+            MATRIX RAIN
+          </button>
+        </div>
+        {settings.matrixRain && (
+          <div style={{ marginTop: "10px" }}>
+            <SliderField
+              label="RAIN SPEED"
+              value={settings.matrixRainSpeed}
+              min={0.125}
+              max={1}
+              step={0.125}
+              display={`${settings.matrixRainSpeed}x`}
+              onChange={(v) => onChange("matrixRainSpeed", v)}
+            />
+          </div>
+        )}
       </div>
 
       {/* ┌─ MEDIAPIPE ──────────────┐ */}
@@ -320,6 +347,7 @@ function SliderField({
       </div>
       <input
         type="range"
+        aria-label={label}
         min={min}
         max={max}
         step={step}

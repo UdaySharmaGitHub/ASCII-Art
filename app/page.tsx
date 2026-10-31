@@ -127,10 +127,10 @@ export default function LandingPage() {
           href="/studio"
           style={{
             fontSize: "11px",
-            color: "#555",
+            color: "#c1c1c1",
             letterSpacing: "0.12em",
             textDecoration: "none",
-            border: "1px solid #222",
+            border: "1px solid #dadada",
             padding: "5px 12px",
             transition: "all 0.2s",
           }}
@@ -139,8 +139,8 @@ export default function LandingPage() {
             (e.currentTarget as HTMLAnchorElement).style.color = "#FF9B21";
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLAnchorElement).style.borderColor = "#222";
-            (e.currentTarget as HTMLAnchorElement).style.color = "#555";
+            (e.currentTarget as HTMLAnchorElement).style.borderColor = "#ededed";
+            (e.currentTarget as HTMLAnchorElement).style.color = "#d2d2d2";
           }}
         >
           LAUNCH STUDIO →
@@ -233,7 +233,7 @@ export default function LandingPage() {
           transition={{ duration: 0.6, delay: 1.1 }}
           style={{
             fontSize: "13px",
-            color: "#555",
+            color: "#FF9B21",
             letterSpacing: "0.15em",
             margin: "0 0 40px",
             maxWidth: "480px",
@@ -242,7 +242,7 @@ export default function LandingPage() {
         >
           YOUR FACE. YOUR MOVEMENT. REIMAGINED IN ASCII.
           <br />
-          <span style={{ color: "#8e8e8e" }}>REAL-TIME · MEDIAPIPE · 30FPS</span>
+          <span style={{ color: "#c7c7c7" }}>REAL-TIME · MEDIAPIPE · 30FPS</span>
         </motion.p>
 
         {/* CTA Button */}

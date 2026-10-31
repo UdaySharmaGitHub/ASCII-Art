@@ -39,6 +39,8 @@ export interface AsciiSettings {
   mirrorH: boolean;
   edgeMode: boolean;
   mediaPipeEnabled: boolean;
+  matrixRain: boolean;
+  matrixRainSpeed: number;
 }
 
 export interface EngineStats {
@@ -53,14 +55,16 @@ export const DEFAULT_SETTINGS: AsciiSettings = {
   charSet: "standard",
   colorMode: "matrix",
   bgColor: "black",
-  columns: 200,
-  charSize: 10,
+  columns: 240,
+  charSize: 6,
   contrast: 1.2,
   colorFromVideo: false,
   invertBrightness: false,
   mirrorH: true,
   edgeMode: false,
   mediaPipeEnabled: false,
+  matrixRain: false,
+  matrixRainSpeed: 0.25,
 };
 
 export const CHAR_SETS: Record<CharSetName, string> = {

@@ -1,6 +1,34 @@
-# Terminal Mirror — Real-time ASCII Art Camera
+<h1 align="center">ASCII-Art Mirror — Real-time ASCII Art Camera</h1>
 
-> Transform your webcam feed into living ASCII art at up to 30fps. Powered by MediaPipe body segmentation, 10 character sets, 12 color modes, Sobel edge detection, and full PNG/text export.
+<p align="center">
+  Transform your webcam feed into living ASCII art with MediaPipe body segmentation, customizable characters and colors, Sobel edge detection, Matrix Rain, and PNG/text export.
+</p>
+
+---
+
+<div align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <a href="https://github.com/UdaySharmaGitHub/ASCII-Art/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
+  <a href="https://github.com/UdaySharmaGitHub/ASCII-Art/stargazers"><img src="https://img.shields.io/github/stars/UdaySharmaGitHub/ASCII-Art?style=social" alt="GitHub Stars"></a>
+</div>
+
+<p align="center">
+  <a href="#features">Features</a> ·
+  <a href="#getting-started">Getting Started</a> ·
+  <a href="#customization-options">Customization</a> ·
+  <a href="#export">Export</a> ·
+  <a href="https://github.com/UdaySharmaGitHub/ASCII-Art/issues">Pick an Issue</a> ·
+  <a href="https://github.com/UdaySharmaGitHub/ASCII-Art/issues/new?title=Bug%3A%20">Report a Bug</a> ·
+  <a href="https://github.com/UdaySharmaGitHub/ASCII-Art/issues/new?title=Feature%3A%20">Request a Feature</a>
+</p>
+
+<div align="center">
+  <img src="https://img.shields.io/badge/character_sets-11-2563eb?style=flat-square" alt="11 character sets">
+  <img src="https://img.shields.io/badge/color_modes-12-0f766e?style=flat-square" alt="12 color modes">
+  <img src="https://img.shields.io/badge/vision-MediaPipe-ea580c?style=flat-square" alt="MediaPipe vision">
+  <img src="https://img.shields.io/badge/framework-Next.js-000000?style=flat-square" alt="Next.js">
+  <img src="https://img.shields.io/badge/contributions-welcome-brightgreen?style=flat-square" alt="Contributions welcome">
+</div>
 
 ---
 
@@ -30,6 +58,7 @@
 | **Background Colors** | 6 options: Black, Dark Green, Dark Blue, Dark Red, White |
 | **Controls** | Resolution (20–200 cols), char size (4–18px), contrast (0.5–3.0) |
 | **Toggles** | Mirror (default on), invert brightness, color from video |
+| **Matrix Rain** | Color-synced rain overlay with a speed slider (0.125x–1x in 0.125x increments, default 0.25x) shown below the enabled toggle |
 | **Export** | Save as PNG, copy raw ASCII text to clipboard |
 
 ---
