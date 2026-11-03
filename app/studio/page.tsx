@@ -120,7 +120,7 @@ export default function StudioPage() {
             onMouseEnter={(e) => (e.currentTarget.style.color = "#FF9B21")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "#444")}
           >
-            ← ASCII-ART MIRROR
+            ← ASCII-ART
           </a>
           <span
             style={{
